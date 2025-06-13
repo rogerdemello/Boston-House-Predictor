@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Boston House Price Predictor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Rubik', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(120deg, #e0f2f1, #ffffff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: #ffffff;
+      padding: 40px 50px;
+      border-radius: 20px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+      max-width: 950px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .container img {
+      width: 80px;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: 34px;
+      color: #00796b;
+      margin-bottom: 25px;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .input-group input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 14px;
+      transition: 0.3s ease;
+      background-color: #f9f9f9;
+    }
+
+    .input-group input[type="text"]:hover,
+    .input-group input[type="text"]:focus {
+      border-color: #00796b;
+      background-color: #fff;
+      box-shadow: 0 0 8px rgba(0, 121, 107, 0.15);
+      outline: none;
+    }
+
+    .slider-label {
+      font-size: 14px;
+      margin-bottom: 4px;
+      font-weight: 500;
+      color: #555;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      appearance: none;
+      height: 6px;
+      background: #cfd8dc;
+      border-radius: 5px;
+      outline: none;
+      transition: 0.3s ease;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #00796b;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    input[type="range"]:hover {
+      background-color: #b2dfdb;
+    }
+
+    .range-value {
+      font-size: 13px;
+      color: #444;
+      margin-top: 4px;
+      align-self: flex-end;
+    }
+
+    input[type="submit"] {
+      grid-column: span 2;
+      padding: 14px;
+      background: #00796b;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    input[type="submit"]:hover {
+      background: #004d40;
+      transform: scale(1.03);
+    }
+
+    .result {
+      margin-top: 30px;
+      font-size: 22px;
+      font-weight: 600;
+      color: #004d40;
+    }
+
+    @media (max-width: 768px) {
+      .input-group input[type="text"] {
+        display: none;
+      }
+
+      .slider-wrapper {
+        display: block;
+        width: 100%;
+      }
+    }
+
+    @media (min-width: 769px) {
+      .slider-wrapper {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="https://cdn-icons-png.flaticon.com/512/69/69524.png" alt="House Icon" />
+    <h1>Boston House Price Predictor</h1>
+
+    <form action="/predict" method="post">
+      <!-- Input fields with sliders -->
+      <div class="input-group">
+        <label>Crime Rate (crim)</label>
+        <input type="text" name="crim" placeholder="e.g. 0.2" required />
+        <div class="slider-wrapper">
+          <input type="range" name="crim" min="0" max="100" step="0.1" value="10" oninput="updateValue(this)">
+          <div class="range-value">10</div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Residential Land (zn)</label>
+        <input type="text" name="zn" placeholder="e.g. 12.5" required />
+        <div class="slider-wrapper">
+          <input type="range" name="zn" min="0" max="100" step="1" value="20" oninput="updateValue(this)">
+          <div class="range-value">20</div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Industrial Proportion (indus)</label>
+        <input type="text" name="indus" placeholder="e.g. 5.0" required />
+        <div class="slider-wrapper">
+          <input type="range" name="indus" min="0" max="30" step="0.1" value="10" oninput="updateValue(this)">
+          <div class="range-value">10</div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Charles River (chas)</label>
+        <input type="text" name="chas" placeholder="0 or 1" required />
+        <div class="slider-wrapper">
+          <input type="range" name="chas" min="0" max="1" step="1" value="0" oninput="updateValue(this)">
+          <div class="range-value">0</div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Nitric Oxide (nox)</label>
+        <input type="text" name="nox" placeholder="e.g. 0.5" required />
+        <div class="slider-wrapper">
+          <input type="range" name="nox" min="0.3" max="0.9" step="0.01" value="0.5" oninput="updateValue(this)">
+          <div class="range-value">0.5</div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Avg Rooms (rm)</label>
+        <input type="text" name="rm" placeholder="e.g. 6.5" required />
+        <div class="slider-wrapper">
+          <input type="range" name="rm" min="3" max="9" step="0.1" value="6" oninput="updateValue(this)">
+          <div class="range-value">6</div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Age (%)</label>
+        <input type="text" name="age" placeholder="e.g. 60.0" required />
+        <div class="slider-wrapper">
+          <input type="range" name="age" min="0" max="100" step="1" value="60" oninput="updateValue(this)">
+          <div class="range-value">60</div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Distance to Employment Centers (dis)</label>
+        <input type="text" name="dis" placeholder="e.g. 4.2" required />
+        <div class="slider-wrapper">
+          <input type="range" name="dis" min="1" max="12" step="0.1" value="4" oninput="updateValue(this)">
+          <div class="range-value">4</div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Highway Access (rad)</label>
+        <input type="text" name="rad" placeholder="e.g. 5" required />
+        <div class="slider-wrapper">
+          <input type="range" name="rad" min="1" max="24" step="1" value="5" oninput="updateValue(this)">
+          <div class="range-value">5</div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Tax Rate (tax)</label>
+        <input type="text" name="tax" placeholder="e.g. 300" required />
+        <div class="slider-wrapper">
+          <input type="range" name="tax" min="100" max="800" step="10" value="300" oninput="updateValue(this)">
+          <div class="range-value">300</div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Pupil-Teacher Ratio (ptratio)</label>
+        <input type="text" name="ptratio" placeholder="e.g. 18.0" required />
+        <div class="slider-wrapper">
+          <input type="range" name="ptratio" min="12" max="25" step="0.1" value="18" oninput="updateValue(this)">
+          <div class="range-value">18</div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Black Population Index (b)</label>
+        <input type="text" name="b" placeholder="e.g. 390.0" required />
+        <div class="slider-wrapper">
+          <input type="range" name="b" min="0" max="400" step="5" value="300" oninput="updateValue(this)">
+          <div class="range-value">300</div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Lower Status (%) (lstat)</label>
+        <input type="text" name="lstat" placeholder="e.g. 12.5" required />
+        <div class="slider-wrapper">
+          <input type="range" name="lstat" min="1" max="40" step="0.5" value="12" oninput="updateValue(this)">
+          <div class="range-value">12</div>
+        </div>
+      </div>
+
+      <input type="submit" value="Predict Price" />
+    </form>
+
+    {% if prediction_text %}
+      <div class="result">{{ prediction_text }}</div>
+    {% endif %}
+  </div>
+
+  <script>
+    function updateValue(slider) {
+      const valueDisplay = slider.nextElementSibling;
+      valueDisplay.textContent = slider.value;
+    }
+  </script>
+</body>
+</html>
